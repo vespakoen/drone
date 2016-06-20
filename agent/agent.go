@@ -212,9 +212,9 @@ func (a *Agent) exec(spec *yaml.Config, payload *queue.Work, cancel <-chan bool)
 			// a bit out of place and will work to resolve.
 			pipeline.Head().Environment["DRONE_BUILD_STATUS"] = status
 
-			if pipeline.Head().Environment["DRONE_SKIP_NEXT"] {
+			if pipeline.Head().Environment["DRONE_SKIP_NEXT"] == "true" {
 				pipeline.Skip()
-				pipeline.Head().Environment["DRONE_SKIP_NEXT"] = false
+				pipeline.Head().Environment["DRONE_SKIP_NEXT"] = "false"
 			} else {
 				if !pipeline.Head().Constraints.Match(
 					a.Platform,
@@ -222,8 +222,7 @@ func (a *Agent) exec(spec *yaml.Config, payload *queue.Work, cancel <-chan bool)
 					payload.Build.Event,
 					payload.Build.Branch,
 					status,
-					payload.Job.Environment
-				) { // TODO: fix this whole section
+					payload.Job.Environment) { // TODO: fix this whole section
 					pipeline.Skip()
 				} else {
 					pipeline.Exec()
