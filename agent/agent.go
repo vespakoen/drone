@@ -212,16 +212,22 @@ func (a *Agent) exec(spec *yaml.Config, payload *queue.Work, cancel <-chan bool)
 			// a bit out of place and will work to resolve.
 			pipeline.Head().Environment["DRONE_BUILD_STATUS"] = status
 
-			if !pipeline.Head().Constraints.Match(
-				a.Platform,
-				payload.Build.Deploy,
-				payload.Build.Event,
-				payload.Build.Branch,
-				status, payload.Job.Environment) { // TODO: fix this whole section
-
+			if pipeline.Head().Environment["DRONE_SKIP_NEXT"] {
 				pipeline.Skip()
+				pipeline.Head().Environment["DRONE_SKIP_NEXT"] = false
 			} else {
-				pipeline.Exec()
+				if !pipeline.Head().Constraints.Match(
+					a.Platform,
+					payload.Build.Deploy,
+					payload.Build.Event,
+					payload.Build.Branch,
+					status,
+					payload.Job.Environment
+				) { // TODO: fix this whole section
+					pipeline.Skip()
+				} else {
+					pipeline.Exec()
+				}
 			}
 		case line := <-pipeline.Pipe():
 			a.Logger(line)
