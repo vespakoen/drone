@@ -136,7 +136,7 @@ func PostHook(c *gin.Context) {
 
 	axes, err := yaml.ParseMatrix(raw)
 	if err != nil {
-		c.AbortWithStatus(500, "Failed to parse yaml file or calculate matrix. %s", err)
+		c.AbortWithError(500, "Failed to parse yaml file or calculate matrix. %s", err)
 		return
 	}
 	if len(axes) == 0 {
@@ -145,7 +145,7 @@ func PostHook(c *gin.Context) {
 
 	netrc, err := remote_.Netrc(user, repo)
 	if err != nil {
-		c.AbortWithStatus(500, "Failed to generate netrc file. %s", err)
+		c.AbortWithError(500, "Failed to generate netrc file. %s", err)
 		return
 	}
 

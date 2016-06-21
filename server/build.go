@@ -220,7 +220,7 @@ func PostBuild(c *gin.Context) {
 		}
 		err := store.CreateBuild(c, build, jobs...)
 		if err != nil {
-			c.AbortWithStatus(500, err.Error())
+			c.AbortWithError(500, err.Error())
 			return
 		}
 
