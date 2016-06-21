@@ -25,8 +25,8 @@ func PostHook(c *gin.Context) {
 
 	tmprepo, build, err := remote_.Hook(c.Request)
 	if err != nil {
-		log.Errorf("failure to parse hook. %s", err)
-		c.AbortWithError(400, err)
+		c.String(400, "failure to parse hook. %s", err)
+		c.Abort()
 		return
 	}
 	if build == nil {
@@ -91,8 +91,8 @@ func PostHook(c *gin.Context) {
 
 	user, err := store.GetUser(c, repo.UserID)
 	if err != nil {
-		log.Errorf("failure to find repo owner %s. %s", repo.FullName, err)
-		c.AbortWithError(500, err)
+		c.String(500, "Failure to find repo owner %s. %s", repo.FullName, err)
+		c.Abort()
 		return
 	}
 
@@ -125,8 +125,8 @@ func PostHook(c *gin.Context) {
 	config := ToConfig(c)
 	raw, err := remote_.File(user, repo, build, config.Yaml)
 	if err != nil {
-		log.Errorf("failure to get build config for %s. %s", repo.FullName, err)
-		c.AbortWithError(404, err)
+		c.String(404, "Failure to get build config for %s. %s", repo.FullName, err)
+		c.Abort()
 		return
 	}
 	sec, err := remote_.File(user, repo, build, config.Shasum)
@@ -137,7 +137,8 @@ func PostHook(c *gin.Context) {
 
 	axes, err := yaml.ParseMatrix(raw)
 	if err != nil {
-		c.AbortWithError(500, "Failed to parse yaml file or calculate matrix. %s", err)
+		c.String(500, "Failed to parse yaml file or calculate matrix. %s", err)
+		c.Abort()
 		return
 	}
 	if len(axes) == 0 {
@@ -146,7 +147,8 @@ func PostHook(c *gin.Context) {
 
 	netrc, err := remote_.Netrc(user, repo)
 	if err != nil {
-		c.AbortWithError(500, "Failed to generate netrc file. %s", err)
+		c.String(500, "Failed to generate netrc file. %s", err)
+		c.Abort()
 		return
 	}
 

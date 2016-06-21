@@ -221,7 +221,8 @@ func PostBuild(c *gin.Context) {
 		}
 		err := store.CreateBuild(c, build, jobs...)
 		if err != nil {
-			c.AbortWithError(500, err.Error())
+			c.String(500, "failure to create build. %s", err)
+			c.Abort()
 			return
 		}
 
