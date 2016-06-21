@@ -5,7 +5,6 @@ import (
 	"regexp"
 
 	"github.com/gin-gonic/gin"
-	"github.com/square/go-jose"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/drone/drone/bus"
@@ -137,7 +136,7 @@ func PostHook(c *gin.Context) {
 
 	axes, err := yaml.ParseMatrix(raw)
 	if err != nil {
-		c.String(500, "Failed to parse yaml file or calculate matrix. %s", err)
+		c.AbortWithStatus(500, "Failed to parse yaml file or calculate matrix. %s", err)
 		return
 	}
 	if len(axes) == 0 {
@@ -146,7 +145,7 @@ func PostHook(c *gin.Context) {
 
 	netrc, err := remote_.Netrc(user, repo)
 	if err != nil {
-		c.String(500, "Failed to generate netrc file. %s", err)
+		c.AbortWithStatus(500, "Failed to generate netrc file. %s", err)
 		return
 	}
 

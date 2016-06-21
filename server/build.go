@@ -13,7 +13,6 @@ import (
 	"github.com/drone/drone/store"
 	"github.com/drone/drone/stream"
 	"github.com/gin-gonic/gin"
-	"github.com/square/go-jose"
 
 	"github.com/drone/drone/model"
 	"github.com/drone/drone/router/middleware/session"
@@ -221,7 +220,7 @@ func PostBuild(c *gin.Context) {
 		}
 		err := store.CreateBuild(c, build, jobs...)
 		if err != nil {
-			c.String(500, err.Error())
+			c.AbortWithStatus(500, err.Error())
 			return
 		}
 
