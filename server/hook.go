@@ -5,6 +5,7 @@ import (
 	"regexp"
 
 	"github.com/gin-gonic/gin"
+	"github.com/square/go-jose"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/drone/drone/bus"
