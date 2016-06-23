@@ -60,6 +60,10 @@ func secretAdd(c *cli.Context) error {
 	secret.Images = c.StringSlice("image")
 	secret.Events = c.StringSlice("event")
 
+	// REGISTRY_ secrets match all images
+	if strings.HasPrefix(secret.Name, "REGISTRY_") {
+		secret.Images = []string{"*"}
+	}
 	if len(secret.Images) == 0 {
 		return fmt.Errorf("Please specify the --image parameter")
 	}

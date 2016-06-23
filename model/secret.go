@@ -1,6 +1,9 @@
 package model
 
-import "path/filepath"
+import (
+	"path/filepath"
+	"strings"
+)
 
 type Secret struct {
 	// the id for this secret.
@@ -31,6 +34,10 @@ func (s *Secret) Match(image, event string) bool {
 
 // MatchImage returns true if an image matches the restricted list.
 func (s *Secret) MatchImage(image string) bool {
+	// REGISTRY_ secrets match all images
+	if strings.HasPrefix(s.Name, "REGISTRY_") {
+		return true
+	}
 	for _, pattern := range s.Images {
 		if match, _ := filepath.Match(pattern, image); match {
 			return true
